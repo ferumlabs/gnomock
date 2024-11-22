@@ -300,7 +300,9 @@ func (d *docker) portBindings(exposedPorts nat.PortSet, ports NamedPorts) nat.Po
 
 		if pName, err := ports.Find(port.Proto(), port.Int()); err == nil {
 			namedPort := ports.Get(pName)
-			binding.HostPort = strconv.Itoa(namedPort.HostPort)
+			if namedPort.HostPort > 0 {
+				binding.HostPort = strconv.Itoa(namedPort.HostPort)
+			}
 		}
 
 		portBindings[port] = []nat.PortBinding{binding}
