@@ -251,7 +251,13 @@ func (d *docker) waitForContainerNetwork(ctx context.Context, id string, ports N
 				return nil, fmt.Errorf("can't find bound ports: %w", err)
 			}
 
-			d.log.Infow("waiting for port allocation", "container", id, "ports", ports, "bound_ports", boundNamedPorts, "json", containerJSON)
+			d.log.Infow("waiting for port allocation",
+				"container", id,
+				"ports", ports,
+				"bound_ports", boundNamedPorts,
+				"json", containerJSON,
+				"env", os.Getenv("GNOMOCK_ENV"),
+			)
 
 			if len(boundNamedPorts) == len(ports) {
 				return &Container{
@@ -294,9 +300,7 @@ func (d *docker) portBindings(exposedPorts nat.PortSet, ports NamedPorts) nat.Po
 
 		if pName, err := ports.Find(port.Proto(), port.Int()); err == nil {
 			namedPort := ports.Get(pName)
-			if namedPort.HostPort > 0 {
-				binding.HostPort = strconv.Itoa(namedPort.HostPort)
-			}
+			binding.HostPort = strconv.Itoa(namedPort.HostPort)
 		}
 
 		portBindings[port] = []nat.PortBinding{binding}
