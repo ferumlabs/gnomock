@@ -251,7 +251,7 @@ func (d *docker) waitForContainerNetwork(ctx context.Context, id string, ports N
 				return nil, fmt.Errorf("can't find bound ports: %w", err)
 			}
 
-			d.log.Infow("waiting for port allocation", "container", id)
+			d.log.Infow("waiting for port allocation", "container", id, "ports", ports, "bound_ports", boundNamedPorts, "json", containerJSON)
 
 			if len(boundNamedPorts) == len(ports) {
 				return &Container{
